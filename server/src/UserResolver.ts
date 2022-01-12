@@ -13,6 +13,7 @@ import { compare, hash } from "bcryptjs";
 import { ApiContext } from "./ApiContext";
 import { createAccessToken, createRefreshToken } from "./auth";
 import { isAuth } from "./middlewares/isAuth";
+import { sendRefreshToken } from "./utils/sendRefreshToken";
 
 @ObjectType()
 class LoginResponse {
@@ -60,11 +61,9 @@ export class UserResolver {
     }
 
     // creates a refresh token and stores it in a cookie
-    res.cookie("jid", createRefreshToken(user), {
-      httpOnly: true,
-    });
+    sendRefreshToken(res, createRefreshToken(user));
 
-    // Returns an access token if the user was validated correctly
+   // Returns an access token if the user was validated correctly
     // The token is created with jsonwebtoken
     return {
       accessToken: createAccessToken(user),
