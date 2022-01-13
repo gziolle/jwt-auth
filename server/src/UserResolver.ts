@@ -7,6 +7,7 @@ import {
   Field,
   Ctx,
   UseMiddleware,
+  Int,
 } from "type-graphql";
 import { User } from "./entity/User";
 import { compare, hash } from "bcryptjs";
@@ -14,6 +15,7 @@ import { ApiContext } from "./ApiContext";
 import { createAccessToken, createRefreshToken } from "./auth";
 import { isAuth } from "./middlewares/isAuth";
 import { sendRefreshToken } from "./utils/sendRefreshToken";
+import { getConnection } from "typeorm";
 
 @ObjectType()
 class LoginResponse {
@@ -40,6 +42,17 @@ export class UserResolver {
     return User.find();
   }
 
+  // This mutation is for test purposes only.
+  // The function should be used in other user flows
+  @Mutation(() => Boolean)
+  async revokeRefreshTokensForUser(@Arg("userId", () => Int) userId: number) {
+    await getConnection()
+      .getRepository(User)
+      .increment({ id: userId }, "tokenVersion", 1);
+      
+    return true;
+  }
+
   @Mutation(() => LoginResponse)
   async login(
     @Arg("email") email: string,
@@ -63,7 +76,7 @@ export class UserResolver {
     // creates a refresh token and stores it in a cookie
     sendRefreshToken(res, createRefreshToken(user));
 
-   // Returns an access token if the user was validated correctly
+    // Returns an access token if the user was validated correctly
     // The token is created with jsonwebtoken
     return {
       accessToken: createAccessToken(user),

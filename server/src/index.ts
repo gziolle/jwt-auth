@@ -41,6 +41,12 @@ import { sendRefreshToken } from "./utils/sendRefreshToken";
       return res.send({ ok: false, accessToken: "" });
     }
 
+    // if the token versions do not match, we can assume that
+    // the token is invalid
+    if(user.tokenVersion !== payload.tokenVersion) {
+      return res.send({ ok: false, accessToken: "" });
+    }
+
     sendRefreshToken(res, createRefreshToken(user));
 
     // Found an user. We can return a new access token
