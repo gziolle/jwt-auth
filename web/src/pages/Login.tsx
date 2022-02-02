@@ -1,0 +1,5 @@
+interface Props {}
+
+export const Login: React.FC<Props> = () => {
+    return <div>login page</div>
+}
