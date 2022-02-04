@@ -5,6 +5,7 @@ import AppRoutes from "./AppRoutes";
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   uri: "http://localhost:4000/graphql",
+  credentials: 'include',
 });
 
 ReactDOM.render(
