@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRegisterMutation } from "../generated/graphql";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const Register: React.FC = () => {
   const [email, setEmail] = useState("");
