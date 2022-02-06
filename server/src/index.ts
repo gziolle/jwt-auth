@@ -8,16 +8,20 @@ import { createConnection } from "typeorm";
 import cookieParser from "cookie-parser";
 import { verify } from "jsonwebtoken";
 import { User } from "./entity/User";
-import { createAccessToken, createRefreshToken} from "./auth";
+import { createAccessToken, createRefreshToken } from "./auth";
 import { sendRefreshToken } from "./utils/sendRefreshToken";
-import cors from 'cors';
+import cors from "cors";
+
+const corsOptions = {
+  credentials: true,
+  origin: "http://localhost:3000",
+};
 
 (async () => {
   const app = express();
-  app.use(cors({
-    credentials: true,
-    origin: "http://localhost:3000"
-  }))
+  app.set("trust proxy", process.env.NODE_ENV !== "production");
+  app.use(cors(corsOptions));
+
   // middleware used to parse any cookies sent by clients
   app.use(cookieParser());
   app.get("/", (_req: any, res) => {
@@ -48,7 +52,7 @@ import cors from 'cors';
 
     // if the token versions do not match, we can assume that
     // the token is invalid
-    if(user.tokenVersion !== payload.tokenVersion) {
+    if (user.tokenVersion !== payload.tokenVersion) {
       return res.send({ ok: false, accessToken: "" });
     }
 
