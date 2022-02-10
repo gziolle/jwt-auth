@@ -36,7 +36,6 @@ export class UserResolver {
   @Query(() => String)
   @UseMiddleware(isAuth)
   bye(@Ctx() { payload }: ApiContext) {
-    console.log(payload);
     return `your user id is ${payload!.userId}`;
   }
 
@@ -58,7 +57,6 @@ export class UserResolver {
       const payload: any = verify(token, process.env.ACCESS_TOKEN_SECRET!);
       return User.findOne(payload.userId);
     } catch (e) {
-      console.log(e);
       return null;
     }
   }
@@ -124,7 +122,6 @@ export class UserResolver {
         password: hashedPassword,
       });
     } catch (err) {
-      console.log(err);
       return false;
     }
     return true;

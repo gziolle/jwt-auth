@@ -12,16 +12,14 @@ export const Register: React.FC = () => {
     <form
       onSubmit={async (e) => {
         e.preventDefault();
-        console.log("form submitted");
 
-        const response = await registerUser({
+        await registerUser({
           variables: {
             email,
             password,
           },
         });
 
-        console.log(response);
         navigate("/");
       }}
     >
