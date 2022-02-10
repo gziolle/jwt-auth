@@ -16,6 +16,7 @@ import { createAccessToken, createRefreshToken } from "./auth";
 import { isAuth } from "./middlewares/isAuth";
 import { sendRefreshToken } from "./utils/sendRefreshToken";
 import { getConnection } from "typeorm";
+import { verify } from "jsonwebtoken";
 
 @ObjectType()
 class LoginResponse {
@@ -42,6 +43,24 @@ export class UserResolver {
     return User.find();
   }
 
+  @Query(() => User, { nullable: true })
+  me(@Ctx() context: ApiContext) {
+    const authorization = context.req.headers["authorization"];
+
+    if (!authorization) {
+      return null;
+    }
+
+    try {
+      const token = authorization.split(" ")[1];
+      const payload:any = verify(token, process.env.ACCESS_TOKEN_SECRET!);
+      return User.findOne(payload.userId);
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+  }
+
   // This mutation is for test purposes only.
   // The function should be used in other user flows
   @Mutation(() => Boolean)
@@ -49,7 +68,7 @@ export class UserResolver {
     await getConnection()
       .getRepository(User)
       .increment({ id: userId }, "tokenVersion", 1);
-      
+
     return true;
   }
 
