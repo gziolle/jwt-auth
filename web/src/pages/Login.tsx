@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { setAccessToken } from "../accessToken";
-import { useLoginMutation } from "../generated/graphql";
-
+import { MeDocument, MeQuery, useLoginMutation } from "../generated/graphql";
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -20,11 +19,24 @@ export const Login: React.FC = () => {
             email,
             password,
           },
+          update: (store, { data }) => {
+            if (!data) {
+              return null;
+            }
+
+            // if data is not null, we can rewrite Appllo cache with the current user
+            store.writeQuery<MeQuery>({
+              query: MeDocument,
+              data: {
+                me: data.login.user,
+              },
+            });
+          },
         });
 
         console.log(response);
 
-        if(response?.data){
+        if (response?.data) {
           const { accessToken } = response.data.login;
           setAccessToken(accessToken);
         }

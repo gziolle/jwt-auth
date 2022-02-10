@@ -22,6 +22,8 @@ import { verify } from "jsonwebtoken";
 class LoginResponse {
   @Field()
   accessToken: string;
+  @Field(() => User)
+  user: User;
 }
 
 @Resolver()
@@ -53,7 +55,7 @@ export class UserResolver {
 
     try {
       const token = authorization.split(" ")[1];
-      const payload:any = verify(token, process.env.ACCESS_TOKEN_SECRET!);
+      const payload: any = verify(token, process.env.ACCESS_TOKEN_SECRET!);
       return User.findOne(payload.userId);
     } catch (e) {
       console.log(e);
@@ -95,10 +97,11 @@ export class UserResolver {
     // creates a refresh token and stores it in a cookie
     sendRefreshToken(res, createRefreshToken(user));
 
-    // Returns an access token if the user was validated correctly
+    // Returns an access token and the user if the user was validated correctly
     // The token is created with jsonwebtoken
     return {
       accessToken: createAccessToken(user),
+      user,
     };
   }
 

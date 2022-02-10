@@ -18,6 +18,7 @@ export type Scalars = {
 export type LoginResponse = {
   __typename?: 'LoginResponse';
   accessToken: Scalars['String'];
+  user: User;
 };
 
 export type Mutation = {
@@ -74,7 +75,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', accessToken: string } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', accessToken: string, user: { __typename?: 'User', id: number, email: string } } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -163,6 +164,10 @@ export const LoginDocument = gql`
     mutation Login($password: String!, $email: String!) {
   login(password: $password, email: $email) {
     accessToken
+    user {
+      id
+      email
+    }
   }
 }
     `;
