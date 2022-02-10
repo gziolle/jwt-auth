@@ -74,6 +74,13 @@ export class UserResolver {
     return true;
   }
 
+  @Mutation(() => Boolean)
+  async logout(@Ctx() { res }: ApiContext) {
+    sendRefreshToken(res, "");
+    // you could also call res.clearCookie()
+    return true;
+  }
+
   @Mutation(() => LoginResponse)
   async login(
     @Arg("email") email: string,

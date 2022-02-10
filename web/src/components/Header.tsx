@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
-import { useMeQuery } from "../generated/graphql";
+import { setAccessToken } from "../accessToken";
+import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 
 const Header: React.FC = () => {
-  const { data } = useMeQuery({fetchPolicy: 'network-only'});
-  console.log(data);
+  const { data } = useMeQuery({ fetchPolicy: "network-only" });
+  const [logout, { client }] = useLogoutMutation();
+
   let body = null;
 
   if (!body) {
@@ -15,6 +17,11 @@ const Header: React.FC = () => {
     body = <div> not logged in</div>;
   }
 
+  const logoutUser = async () => {
+    await logout();
+    setAccessToken("");
+    await client!.resetStore();
+  };
   return (
     <header>
       {body}
@@ -29,6 +36,9 @@ const Header: React.FC = () => {
       </div>
       <div>
         <Link to="/bye">bye</Link>
+      </div>
+      <div>
+        <button onClick={logoutUser}>logout</button>
       </div>
     </header>
   );
