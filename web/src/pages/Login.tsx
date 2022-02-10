@@ -24,10 +24,13 @@ export const Login: React.FC = () => {
               return null;
             }
 
+            console.log('data', data);
+
             // if data is not null, we can rewrite Appllo cache with the current user
             store.writeQuery<MeQuery>({
               query: MeDocument,
               data: {
+                __typename: "Query",
                 me: data.login.user,
               },
             });

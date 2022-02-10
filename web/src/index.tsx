@@ -55,7 +55,6 @@ const tokenRefreshLink = new TokenRefreshLink({
     }
   },
   fetchAccessToken: () => {
-    console.log('entrou aqui');
     return fetch("http://localhost:4000/refresh_token", {
       method: "POST",
       credentials: "include",
